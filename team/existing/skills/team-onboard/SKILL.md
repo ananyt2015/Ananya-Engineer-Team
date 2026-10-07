@@ -46,7 +46,7 @@ Arguments: none for a full onboarding; `refresh` to re-sync after docs or conven
    Then work out the **worktree setup**: what a fresh git checkout of this repo needs before its tests run, since the team builds each task in its own worktree.
    - Dependencies: prefer a fast install from the lockfile (`pnpm install --frozen-lockfile`, `uv sync`), or symlinks to the main checkout's dependency folders when tasks won't change dependencies.
    - Python: make sure imports resolve to the worktree's code. An editable install in a shared virtualenv points at the main checkout and would test the wrong code; prefer a per-worktree environment.
-   - Untracked files the app needs, such as `.env`: symlink them from the project root.
+   - Untracked files the app needs, such as `.env`: symlink them from the project root. Never copy a `.env`, and never write its values into notes, `PROJECT.md`, `STANDARDS.md`, or any rule file (FLOW.md → Secrets are never stored).
 
    With the user's agreement, prove it once: `git worktree add .dev-team/worktrees/_probe HEAD`, run the setup and the test command there, then `git worktree remove --force .dev-team/worktrees/_probe`.
 

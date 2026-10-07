@@ -40,7 +40,7 @@ If the Playwright tools are not available in this session, record the UI flows u
 
 The default is a persistent profile, one per workspace, in that same cache (`mcp-{channel}-{workspace-hash}`). The browser opens headed.
 
-When a flow needs a signed-in user and the page is a login wall, ask the user to log in once in that window, then continue. Later runs on this machine reuse that login. Each person has their own profile; do not copy it to another machine or into the repo.
+When a flow needs a signed-in user and the page is a login wall, ask the user to log in once in that window, then continue. The team never sees, types, repeats, or saves the password. Later runs on this machine reuse that login. Each person has their own profile; do not copy it to another machine or into the repo. Do not export cookies or storage state. A screenshot that would show a password, token, or `.env` value is not saved.
 
 That profile is Playwright's browser. A login in the user's everyday Chrome is not visible to it. To drive a tab they are already signed into, they connect the Playwright browser extension. Do not copy their Chrome profile into the repo.
 

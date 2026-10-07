@@ -45,7 +45,7 @@ A task is **ready** when it is `todo` and every task in its `depends` is `merged
    - In `existing` mode, the "Do not touch" list from `PROJECT.md`
    - The test, lint, and typecheck commands from `PROJECT.md`
    - Build-log notes from the tasks it depends on
-   - The ground rules: stay within the task, comment the code per `skills/team/COMMENTING.md`, add or update tests, run relevant checks, do not commit, do not edit `.dev-team/`
+   - The ground rules: stay within the task, comment the code per `skills/team/COMMENTING.md`, add or update tests, run relevant checks, do not commit, do not edit `.dev-team/`. Never store a login, password, token, or any `.env` value in the session, on disk, or in any rule file (FLOW.md → Secrets are never stored).
 5. Set the task to `running` on the board with the agent ID.
 
 **Background first.** Launch engineers in the background (FLOW.md → Host) so each finished task can unblock its dependents immediately. After launching, end your turn with a short board summary; you are notified as each engineer finishes, and you handle it in section 3. If background subagents are unavailable, launch each set of ready tasks in parallel in the foreground and handle them as they return.
