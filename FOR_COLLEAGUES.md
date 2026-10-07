@@ -92,6 +92,7 @@ product repo, then `git pull origin main` for any `.dev-team/` updates.
 | Review & merge a branch **into main** | `/team-accept origin/<branch>` |
 | After author pushes fixes | `/team-accept recheck …` then `merge …` |
 | Validate work already on main | `/team-audit <sprint>` |
+| Find why something broke | `/team-rca <symptom or ticket>` → `/team run <slug>` |
 
 Type the command yourself — the team does not start on its own.
 

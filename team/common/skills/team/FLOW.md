@@ -82,7 +82,7 @@ If a doc was added, changed, or removed, tell the user which, and recommend `/te
 | 5 | `/team-security` | Security Reviewer | `security.md` |
 | 6 | `/team-qa` | QA Tester | `qa.md`, then delivery |
 
-`/team` shows status and runs the next stage. Stage 0 runs once per project, and `/team-docs` re-syncs the team when docs change; stages 1–6 run per feature. `/team-sprint` runs stages 1–6 for several features together, with one shared build scheduler and batched questions. `/team-accept` handles work the team didn't build, such as a teammate's sprint branch: it agrees the scope, runs review, security, and QA against it, and merges it with the user's approval. `/team-audit` validates work already on a branch (e.g. a sprint built before the team was deployed) and turns its gaps into a `<name>-gaps` feature.
+`/team` shows status and runs the next stage. Stage 0 runs once per project, and `/team-docs` re-syncs the team when docs change; stages 1–6 run per feature. `/team-sprint` runs stages 1–6 for several features together, with one shared build scheduler and batched questions. `/team-accept` handles work the team didn't build, such as a teammate's sprint branch: it agrees the scope, runs review, security, and QA against it, and merges it with the user's approval. `/team-audit` validates work already on a branch (e.g. a sprint built before the team was deployed) and turns its gaps into a `<name>-gaps` feature. `/team-rca` investigates a bug or incident, proves its root cause in `<slug>/rca.md`, and hands the fix to `/team-plan` under the same slug.
 
 ## Workspace layout
 
@@ -101,6 +101,7 @@ If a doc was added, changed, or removed, tell the user which, and recommend `/te
     <feature-slug>/integration/   # the feature's integration branch checkout
     <feature-slug>/T1/            # one checkout per running task
   <feature-slug>/       # one folder per feature or ticket
+    rca.md rca/         # bug fixes only: root cause analysis and its evidence (/team-rca)
     spec.md design.md tasks.md review.md security.md qa.md followups.md
 ```
 
@@ -118,7 +119,7 @@ Every artifact starts with this frontmatter. Keep it accurate; other stages read
 ```yaml
 ---
 feature: <slug, or "project" for project-level docs>
-stage: project | standards | requirements | architecture | backlog | spec | design | tasks | review | security | qa | accept | audit
+stage: project | standards | requirements | architecture | backlog | rca | spec | design | tasks | review | security | qa | accept | audit
 status: draft | approved | done
 updated: <YYYY-MM-DD>
 ---
@@ -128,6 +129,7 @@ updated: <YYYY-MM-DD>
 
 - Every stage from 1 onward needs `.dev-team/PROJECT.md` and `.dev-team/STANDARDS.md` with `status: approved`. If missing, tell the user to run the setup command for this mode and stop.
 - In `new` mode, `/team-plan` also needs `requirements.md`, `architecture.md`, and `BACKLOG.md` approved.
+- `/team-plan` needs `rca.md` approved when the feature folder has one.
 - `/team-architect` needs `spec.md` approved.
 - `/team-build` needs `design.md` and `tasks.md` approved.
 - `/team-review`, `/team-security`, `/team-qa` need at least one merged task in `tasks.md`.

@@ -104,6 +104,7 @@ Both scripts default to the current directory when no path is given. `--mode` is
 | `/team-sprint` | Sprint lead: plans several features together, one build scheduler, batched questions | `sprints/<name>.md` |
 | `/team-accept` | Acceptance lead: reviews, verifies, and merges a teammate's branch or PR | `accept/<slug>.md` |
 | `/team-audit` | Audit lead: validates work already built against the plan, turns gaps into a feature | `audit/<name>.md` |
+| `/team-rca` | Root Cause Analyst: reproduces a bug, bisects, proves the cause, proposes the fix | `<slug>/rca.md`, `<slug>/rca/` |
 
 Engineers are subagents that `/team-build` delegates to by the task's owner tag:
 
@@ -168,6 +169,10 @@ Typical runs:
 /team-onboard
 /team-plan PROJ-142                # or paste the ticket / describe the change
 /team run
+
+# a bug or incident: root cause first, then the fix
+/team-rca PROJ-207 good v2.3.0     # reproduce, bisect from the last good release, prove the cause
+/team run proj-207-export-timeout  # spec from rca.md → architect → build → review → security → qa
 
 # a sprint of several tickets
 /team-sprint plan sprint-12        # pick tickets, batched specs and designs

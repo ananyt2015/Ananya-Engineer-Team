@@ -17,7 +17,7 @@ Read `skills/team/FLOW.md` first. It defines the modes, pipeline, artifacts, gat
 - `/team deliver <feature>` — deliver a feature's integration branch (see "Delivery" in FLOW.md).
 - `/team <feature>` — show status of one feature and offer to run its next stage.
 
-For several features at once, use `/team-sprint`. To review and merge a teammate's branch, use `/team-accept <branch>`. To validate work already built, use `/team-audit <sprint>`.
+For several features at once, use `/team-sprint`. To review and merge a teammate's branch, use `/team-accept <branch>`. To validate work already built, use `/team-audit <sprint>`. To find the root cause of a bug or incident before fixing it, use `/team-rca <symptom or ticket>`.
 
 ## Status
 
@@ -32,6 +32,7 @@ For several features at once, use `/team-sprint`. To review and merge a teammate
 
 The next stage of a feature is the first of these that is missing or not approved:
 `spec.md` → `design.md` + `tasks.md` → all tasks merged → `review.md` → `security.md` → `qa.md` → delivered.
+A bug fix started by `/team-rca` has `rca.md` first; until it is approved, its next stage is rca.
 When `qa.md` is approved with no open critical/major findings, the feature is done: set `status: done` in `tasks.md`, and in `new` mode tick the feature in `BACKLOG.md`. Delivery follows (QA's last step).
 
 ## Running stages
@@ -52,5 +53,6 @@ To run a stage, read that stage's skill file and follow it exactly:
 | sprint | `skills/team-sprint/SKILL.md` |
 | accept a teammate's branch | `skills/team-accept/SKILL.md` |
 | audit existing work | `skills/team-audit/SKILL.md` |
+| root cause of a bug | `skills/team-rca/SKILL.md` |
 
 In `run` mode, after each stage's approval gate, continue to the next stage. Stop when the user picks Stop or Revise, when a stage reports a blocker, or when the feature is done. Never skip a gate on the user's behalf.
