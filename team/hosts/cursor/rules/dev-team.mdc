@@ -1,0 +1,16 @@
+---
+description: Dev team pipeline. Route feature, ticket, sprint and fix work through /team-run.
+alwaysApply: true
+---
+
+# Dev team
+
+This workspace uses the dev team in `.dev-team/`. Its work runs as a pipeline: one fresh subagent per step, each reading only the files it needs.
+
+- To work on a task, ticket, sprint, fix, or an item from a handoff file, use `/team-run <item>` (skill `team-run`) or a stage command (`/team-review <slug>`, `/team-qa <slug>`, …). Do not plan, design, build, review or test in the main chat yourself.
+- Setup, docs sync, acceptance, audits and root-cause analysis run through their own commands (`/team-onboard`, `/team-kickoff`, `/team-docs`, `/team-accept`, `/team-audit`, `/team-rca`), which hand the heavy reading to agents.
+- In the main chat, don't read `.dev-team/PROJECT.md`, `STANDARDS.md`, `skills/team/FLOW.md`, specs, designs, task cards, diffs or code in full. Agents read the small files in `.dev-team/context/`.
+- The pipeline asks the user only at delivery (how to deliver, and whether to add comments to the touched functions), when an agent needs an answer, and after spec and design if run with `gated`. Small changes take the quick track automatically; `quick`, `light`, `full` override it.
+- A pipeline can be resumed in Cursor or Claude Code with the same `/team-run <slug>`: `pipeline.md` records which tool holds it, and a stale hold (no heartbeat for 30 minutes) is taken over safely. If a usage limit hits, the state is already saved; resume later.
+- `.dev-team/BACKLOG.md` → `## Deferred` is deferred work (follow-ups, declined comments): don't start it unless the user names an item.
+- Status: `/team` or `/team-run status`.

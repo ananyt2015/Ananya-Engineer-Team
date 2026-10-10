@@ -101,6 +101,10 @@ while IFS="$(printf '\t')" read -r src rel; do
   fi
 
   cur="$(file_hash "$dest")"
+  if [ "$cur" != "$new" ] && [ -z "$old" ] && is_shared_file "$rel"; then
+    report KEPT "$rel (the project's own; add the lines from $src to it yourself)"; skipped=$((skipped + 1))
+    continue
+  fi
   if [ "$cur" = "$new" ]; then
     unchanged=$((unchanged + 1))
     printf '%s\t%s\n' "$new" "$rel" >> "$new_manifest"

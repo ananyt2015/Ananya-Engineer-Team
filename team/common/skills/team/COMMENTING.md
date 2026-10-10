@@ -1,6 +1,8 @@
 # Commenting guide
 
-Every engineer on the team writes comments so that the next developer, opening this code with no access to the spec, the ticket discussion, or this conversation, understands what the code does and why it is written this way.
+Comments exist so that the next developer, opening this code with no access to the spec, the ticket discussion, or this conversation, understands what the code does and why it is written this way.
+
+**Who writes what.** While building, engineers write only the why-comments for non-obvious logic in their own change. At delivery, if the user says yes, `team-commenter` adds the rest of this guide (headers, docstrings, why-comments) to the files and functions the change touched, and nothing else. If the user says no, the work goes under `## Deferred` in `.dev-team/BACKLOG.md`. Nobody comments code outside the change.
 
 ## Style comes from the project
 

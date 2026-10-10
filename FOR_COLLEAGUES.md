@@ -25,7 +25,8 @@ Commit and push these to **`main`**:
 **Not** on `main` (local only — deploy already keeps them out of git):
 
 - `.cursor/skills/`, `.cursor/agents/`
-- `.claude/skills/`, `.claude/agents/`
+- `.claude/skills/`, `.claude/agents/`, `.claude/CLAUDE.md`
+- `.cursor/rules/dev-team.mdc`
 - `.dev-team/worktrees/`
 
 Feature work (e.g. `sprint-2`) stays on its branch until someone merges it to **`main`**.
@@ -86,15 +87,24 @@ product repo, then `git pull origin main` for any `.dev-team/` updates.
 
 | Goal | Command |
 |------|---------|
-| Status | `/team` |
+| Status | `/team` or `/team-run status` |
 | Docs changed → then **commit to main** | `/team-docs` |
-| Build something | `/team-plan …` → `/team run` → deliver **to main** (or PR into main) |
+| Build something | `/team-run <ticket or description>` → answer the delivery question → deliver **to main** (or PR into main) |
+| Small fix | `/team-run <description> quick` (the team also picks quick by itself for small changes) |
+| Approve spec and design yourself | `/team-run <ticket> gated` |
+| Continue after a usage limit, or in the other tool | `/team-run <slug>` |
+| A sprint | `/team-sprint plan <name>` → `/team-run sprint <name>` |
 | Review & merge a branch **into main** | `/team-accept origin/<branch>` |
 | After author pushes fixes | `/team-accept recheck …` then `merge …` |
 | Validate work already on main | `/team-audit <sprint>` |
-| Find why something broke | `/team-rca <symptom or ticket>` → `/team run <slug>` |
+| Find why something broke | `/team-rca <symptom or ticket>` → `/team-run <slug>` |
 
-Type the command yourself — the team does not start on its own.
+Type the command yourself. The team asks you once per item, at delivery: how to deliver, and whether to add
+comments to the functions it touched (if not, it notes them under `## Deferred` in `.dev-team/BACKLOG.md`).
+
+Each pipeline's state is in `.dev-team/<slug>/pipeline.md`, so you can stop in Cursor and continue in Claude Code
+(or the reverse). Two people shouldn't run the same item at once: `pipeline.md` shows who holds it, and the team
+asks before taking over an item someone touched in the last 30 minutes.
 
 After any accept/audit/docs stage that updates `.dev-team/`, **commit and push to `main`**
 so the next `git pull origin main` picks it up.

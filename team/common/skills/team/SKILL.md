@@ -1,58 +1,44 @@
 ---
 name: team
-description: Dev team orchestrator. Shows the status of the project setup and features in .dev-team/ and runs the next stage of the team flow (kickoff or onboard, plan, architect, build, review, security, qa). Use only when the user invokes /team.
+description: Dev team orchestrator. Shows the status of the project setup and features in .dev-team/ and starts the next step of the team flow (kickoff or onboard, then /team-run). Use only when the user invokes /team.
 disable-model-invocation: true
 ---
 
 # /team — Dev Team Orchestrator
 
-Read `skills/team/FLOW.md` first. It defines the modes, pipeline, artifacts, gates, and ground rules.
+For status, read only frontmatter (`head -12`), `pipeline.md` files, sprint Items tables, and `rg -c` counts. Never read `FLOW.md`, specs, designs or code in this chat; feature work follows `skills/team-run/SKILL.md`.
 
 ## Usage
 
 - `/team` — show status and recommend the next step.
-- `/team <idea, ticket, or feature request>` — start a new feature at `/team-plan`.
-- `/team next` — in `new` mode, start the next unchecked feature in `BACKLOG.md`.
-- `/team run [feature]` — run the remaining stages in order, stopping at every approval gate.
-- `/team deliver <feature>` — deliver a feature's integration branch (see "Delivery" in FLOW.md).
-- `/team <feature>` — show status of one feature and offer to run its next stage.
+- `/team <idea, ticket, or feature request>` — start it with `/team-run` (the conductor picks the quick, light or full track).
+- `/team next` — in `new` mode, same as `/team-run next` (the next unchecked feature in `BACKLOG.md`).
+- `/team run [feature]` — same as `/team-run <feature>`: every step in order, each in a fresh agent, stopping only at the delivery gate (or also after spec and design with `gated`).
+- `/team deliver <feature>` — same as `/team-run <feature> only deliver`.
+- `/team <feature>` — show status of one feature (from its `pipeline.md`) and offer to continue it.
 
-For several features at once, use `/team-sprint`. To review and merge a teammate's branch, use `/team-accept <branch>`. To validate work already built, use `/team-audit <sprint>`. To find the root cause of a bug or incident before fixing it, use `/team-rca <symptom or ticket>`.
+All feature work runs through `skills/team-run/SKILL.md`: read it and follow it whenever a step has to run. For a whole sprint, use `/team-sprint plan` and then `/team-run sprint <name>`. Deferred work lives under `## Deferred` in `.dev-team/BACKLOG.md`. To review and merge a teammate's branch, use `/team-accept <branch>`. To validate work already built, use `/team-audit <sprint>`. To find the root cause of a bug before fixing it, use `/team-rca <symptom or ticket>`.
 
 ## Status
 
-1. **Mode and setup.** Determine the mode (FLOW.md). If `.dev-team/PROJECT.md` or `.dev-team/STANDARDS.md` is missing or not approved, say so and recommend `/team-kickoff` (new) or `/team-onboard` (existing). Nothing else can run until setup is approved.
-   - In `new` mode before kickoff, list the `.md` files under `docs/` and elsewhere in the repo, so the user can see what kickoff will offer.
-   - After setup, run the docs freshness check from FLOW.md and report any added, changed, or removed docs, recommending `/team-docs`.
-2. **Backlog** (`new` mode). Count features in `BACKLOG.md` by checked vs unchecked, and name the current milestone.
-3. **Features.** For each feature folder (FLOW.md → resolving features), read each artifact's frontmatter and the board in `tasks.md`. Report one line per feature: slug, current stage, tasks merged/running/blocked, open critical/major findings, and whether it's delivered.
-4. **Sprints.** For each `.dev-team/sprints/*.md` not `done`, report its status and item progress.
-5. **Acceptances and audits.** For each `.dev-team/accept/*.md` and `.dev-team/audit/*.md` not `done`, report what it covers, its status, and open findings. If `BACKLOG.md` has features marked "(built, not verified)", recommend `/team-audit` for them before new work.
-6. **Recommend** the next command for the most recently updated unfinished feature, or in `new` mode, the next backlog feature if none is in progress.
+1. **Mode and setup.** The mode is `mode:` in `PROJECT.md`'s frontmatter, or before setup: `skills/team-kickoff/` installed means `new`, `skills/team-onboard/` means `existing`. If `.dev-team/PROJECT.md` or `.dev-team/STANDARDS.md` is missing or not approved, recommend `/team-kickoff` (new) or `/team-onboard` (existing). Nothing else can run until setup is approved.
+2. **Docs freshness.** After setup, start a `team-analyst` (no model) with PROCEDURE `skills/team-docs/PROCEDURE.md` (absolute path under this host's folder), PHASE `scan`, ROOT, OUTPUT `.dev-team/setup/docs-scan.md`, NOTES `status only`. If its summary lists added, changed or removed docs, recommend `/team-docs`. Skip this when the user only asked about one feature.
+3. **Backlog.** `new` mode: count features in `BACKLOG.md` by checked vs unchecked (`rg -c`), and name the current milestone. Both modes: count the items under `## Deferred`.
+4. **Features.** For each feature folder (not `context/`, `setup/`, `docs/`, `sprints/`, `accept/`, `audit/`, `worktrees/`), read the frontmatter and the last Log line of `pipeline.md`, or the artifacts' frontmatter if it has none. One line per feature: slug, track, current step, tasks merged, whether it's delivered, and the conductor holding it if its heartbeat is under 30 minutes old.
+5. **Sprints.** For each `.dev-team/sprints/*.md` not `done`, report its status and item progress.
+6. **Acceptances and audits.** For each `.dev-team/accept/*.md` and `.dev-team/audit/*.md` not `done`, report what it covers, its status, and open findings (`rg -c 'Status:\*\* open'`). If `BACKLOG.md` has features marked "(built, not verified)", recommend `/team-audit` for them before new work.
+7. **Recommend** the next command: `/team-run <slug>` for the most recently updated unfinished feature, or in `new` mode `/team-run next` if none is in progress.
 
-The next stage of a feature is the first of these that is missing or not approved:
-`spec.md` → `design.md` + `tasks.md` → all tasks merged → `review.md` → `security.md` → `qa.md` → delivered.
-A bug fix started by `/team-rca` has `rca.md` first; until it is approved, its next stage is rca.
-When `qa.md` is approved with no open critical/major findings, the feature is done: set `status: done` in `tasks.md`, and in `new` mode tick the feature in `BACKLOG.md`. Delivery follows (QA's last step).
+## Other commands
 
-## Running stages
-
-To run a stage, read that stage's skill file and follow it exactly:
-
-| Stage | Skill file |
-|-------|-----------|
+| Command | Skill file |
+|---------|-----------|
 | setup (new) | `skills/team-kickoff/SKILL.md` |
 | setup (existing) | `skills/team-onboard/SKILL.md` |
-| re-sync with project docs | `skills/team-docs/SKILL.md` |
-| plan | `skills/team-plan/SKILL.md` |
-| architect | `skills/team-architect/SKILL.md` |
-| build | `skills/team-build/SKILL.md` |
-| review | `skills/team-review/SKILL.md` |
-| security | `skills/team-security/SKILL.md` |
-| qa and delivery | `skills/team-qa/SKILL.md` |
-| sprint | `skills/team-sprint/SKILL.md` |
+| re-sync with project docs | `skills/team-docs/SKILL.md` (then `/team-run` rebuilds `.dev-team/context/`) |
+| choose a sprint's items | `skills/team-sprint/SKILL.md` |
 | accept a teammate's branch | `skills/team-accept/SKILL.md` |
 | audit existing work | `skills/team-audit/SKILL.md` |
 | root cause of a bug | `skills/team-rca/SKILL.md` |
 
-In `run` mode, after each stage's approval gate, continue to the next stage. Stop when the user picks Stop or Revise, when a stage reports a blocker, or when the feature is done. Never skip a gate on the user's behalf.
+Setup documents are approved only by the user.

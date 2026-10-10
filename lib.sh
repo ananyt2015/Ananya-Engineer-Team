@@ -102,6 +102,12 @@ list_sources() {
   } | sort -t "$(printf '\t')" -k2
 }
 
+# Prints host-relative paths of files only one host gets (team/hosts/<host>/, e.g. rules/dev-team.mdc).
+list_host_files() {
+  [ -d "$TEAM_DIR/hosts/$1" ] || return 0
+  (cd "$TEAM_DIR/hosts/$1" && find . -type f ! -name '.DS_Store' | sed 's|^\./||' | sort)
+}
+
 # Prints "source<TAB>project-relative" for every (host × source) to deploy.
 # project-relative is e.g. .cursor/skills/team/SKILL.md.
 list_deploy_entries() {
@@ -110,7 +116,16 @@ list_deploy_entries() {
     list_sources "$mode" | while IFS="$(printf '\t')" read -r src rel; do
       printf '%s\t.%s/%s\n' "$src" "$host" "$rel"
     done
+    list_host_files "$host" | while IFS= read -r rel; do
+      printf '%s\t.%s/%s\n' "$TEAM_DIR/hosts/$host/$rel" "$host" "$rel"
+    done
   done
+}
+
+# Project files a project may already own (e.g. its own CLAUDE.md). Never overwritten
+# unless dev-team created them, even with --force.
+is_shared_file() {
+  case "$1" in .claude/CLAUDE.md) return 0 ;; *) return 1 ;; esac
 }
 
 # Removes now-empty parent directories of a file, never going above the project root.
@@ -151,7 +166,7 @@ remove_exclude_block() {
 # Cursor/Claude Code team files are hidden too; planning files under .dev-team/
 # (PROJECT.md, STANDARDS.md, accept/, …) are left visible so colleagues can share them.
 add_exclude_block() {
-  local mode="$1" host
+  local mode="$1" host rel
   remove_exclude_block
   mkdir -p "$(dirname "$GIT_EXCLUDE")"
   {
@@ -163,6 +178,11 @@ add_exclude_block() {
         echo "/${GIT_PREFIX}.${host}/skills/team-*/"
         echo "/${GIT_PREFIX}.${host}/agents/team-*.md"
         echo "/${GIT_PREFIX}.${host}/dev-team.manifest"
+        list_host_files "$host" | while IFS= read -r rel; do
+          if ! is_shared_file ".${host}/${rel}" || [ -n "$(manifest_hash ".${host}/${rel}")" ]; then
+            echo "/${GIT_PREFIX}.${host}/${rel}"
+          fi
+        done
       done
     fi
     echo "$EXCLUDE_END"

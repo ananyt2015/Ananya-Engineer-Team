@@ -29,7 +29,7 @@ updated: <YYYY-MM-DD>
 ### API
 ### Code style and types
 ### Comments and documentation
-<!-- Docstring/comment format (e.g. Google-style, TSDoc), required headers, language. The team always comments per COMMENTING.md; this section sets the style. -->
+<!-- Docstring/comment format (e.g. Google-style, TSDoc), required headers, language. Engineers write why-comments as they build; docstrings for touched functions are added at delivery when the user agrees (COMMENTING.md). This section sets the style. -->
 ### Error handling and logging
 ### Security
 ### AI / LLM
